@@ -19,7 +19,15 @@ pipeline {
       steps {
           sh 'ant -f build.xml -v'
         }
+        post {
+          #it means only succeed if above is success
+          success {
+            archiveArtifacts artifacts: 'dist/*.jar', fingerprint: true
+          }
+        }
     }
+
+
     stage('Deploy'){
       agent {
         label 'slave'
@@ -41,12 +49,5 @@ pipeline {
   }
 
 
-  post {
-    agent {
-      label 'master'
-    }
-    always {
-      archiveArtifacts artifacts: 'dist/*.jar', fingerprint: true
-    }
-  }
+
 }
