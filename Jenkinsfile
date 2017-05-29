@@ -42,6 +42,9 @@ pipeline {
 
 
   post {
+    agent {
+      label 'master'
+    }
     always {
       archiveArtifacts artifacts: 'dist/*.jar', fingerprint: true
     }
