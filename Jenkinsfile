@@ -78,8 +78,7 @@ pipeline {
         branch 'development'
       }
       steps{
-        echo "doing basic git setup so that it uses HTTPS connection instead of ssh"
-        sh 'git config remote.origin.url https://github.com/maanpreet/content-jenkins-java-project.git'
+        
         echo "Stashing git repo"
         sh 'git stash'
         echo "checking to development branch as jenkins checks out to particular ref"
