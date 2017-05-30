@@ -72,13 +72,13 @@ pipeline {
 
     stage ('push changes to preprod branch'){
       agent {
-        label 'centos'
+        label 'master'
       }
       when{
         branch 'development'
       }
       steps{
-        
+
         echo "Stashing git repo"
         sh 'git stash'
         echo "checking to development branch as jenkins checks out to particular ref"
