@@ -62,7 +62,7 @@ pipeline {
         label 'slave'
       }
       when {
-        branch 'development'
+        branch 'preprod'
       }
       steps{
         sh "cp /var/www/html/rectangles/all/${env.BRANCH_NAME}/rectangle_${env.BUILD_NUMBER}.jar  /var/www/html/rectangles/green/"
