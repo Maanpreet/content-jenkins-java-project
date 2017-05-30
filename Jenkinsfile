@@ -12,7 +12,7 @@ pipeline {
         junit 'reports/result.xml'
       }
     }
-    stage('build') {
+    stage('build jar file') {
       agent {
         label 'slave'
       }
@@ -27,21 +27,21 @@ pipeline {
     }
 
 
-    stage('Deploy'){
+    stage('Deploy jar file to branch folder'){
       agent {
         label 'slave'
       }
       steps{
-        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/"
+        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/${env.BRANCH_NAME}/"
       }
     }
 
-    stage('Running on CentOS'){
+    stage('Testing Jar  on CentOS'){
       agent {
         label 'centos'
       }
       steps{
-        sh "wget http://10.32.1.77/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
+        sh "wget http://10.32.1.77/rectangles/all/${env.BRANCH_NAME}/rectangle_${env.BUILD_NUMBER}.jar"
         sh "java -jar rectangle_${env.BUILD_NUMBER}.jar 3 4"
       }
     }
@@ -51,7 +51,7 @@ pipeline {
         docker 'openjdk:8u121-jre'
       }
       steps{
-        sh "wget http://10.32.1.77/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
+        sh "wget http://10.32.1.77/rectangles/all/${env.BRANCH_NAME}/rectangle_${env.BUILD_NUMBER}.jar"
         sh "java -jar rectangle_${env.BUILD_NUMBER}.jar 3 3"
 
       }
@@ -65,11 +65,30 @@ pipeline {
         branch 'development'
       }
       steps{
-        sh "cp /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar  /var/www/html/rectangles/green/"
+        sh "cp /var/www/html/rectangles/all/${env.BRANCH_NAME}/rectangle_${env.BUILD_NUMBER}.jar  /var/www/html/rectangles/green/"
+
+       }
+    }
+
+    stage ('push changes to preprod branch'){
+      agent {
+        label 'centos'
+      }
+      when{
+        branch 'development'
+      }
+      steps{
+        echo "Stashing git repo"
+        sh 'git stash'
+        echo "checking to development branch as jenkins checks out to particular ref"
+        sh 'git checkout development'
+        echo "checking out to preprod branch for above same reason"
+        sh 'git checkout preprod'
+        echo "mergin development to preprod"
+        sh 'git merge development'
+        echo "pushing origin to preprod"
+        sh 'git push origin preprod'
       }
     }
   }
-
-
-
 }
