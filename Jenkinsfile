@@ -83,8 +83,10 @@ pipeline {
         sh 'git stash'
         echo "checking to development branch as jenkins checks out to particular ref"
         sh 'git checkout development'
+        sh 'git pull'
         echo "checking out to preprod branch for above same reason"
         sh 'git checkout preprod'
+        sh 'git pull'
         echo "mergin development to preprod"
         sh 'git merge development'
         echo "pushing origin to preprod"
