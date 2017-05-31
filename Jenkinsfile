@@ -7,6 +7,17 @@ pipeline {
 
 
   stages {
+
+    stage('using Library'){
+      agent {
+        label 'centos'
+      }
+      steps{
+              sayHello 'Awesome useful function as of now'
+      }
+    }
+
+
     stage('Unit test'){
       agent {
         label 'slave'
